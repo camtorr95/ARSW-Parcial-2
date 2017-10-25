@@ -1,19 +1,19 @@
 var app = (function () {
 
-    var nombreJugador="NN";
-    
+    var nombreJugador = "NN";
+
     var stompClient = null;
     var gameid = 0;
 
     return {
-
         loadWord: function () {
 
             gameid = $("#gameid").val();
-            
-            $.get("/hangmangames/" + gameid +"/currentword",
+
+            $.get("/hangmangames/" + gameid + "/currentword",
                     function (data) {
                         $("#palabra").html("<h1>" + data + "</h1>");
+                        app.wsconnect();
                     }
             ).fail(
                     function (data) {
@@ -34,20 +34,27 @@ var app = (function () {
                 console.log('Connected: ' + frame);
 
                 //subscriptions
-            
+                stompClient.subscribe('/topic/wupdate.' + gameid, function (eventbody) {
+                    var new_word = eventbody.body;
+                    $("#palabra").html("<h1>" + new_word + "</h1>");
+                });
+
+                stompClient.subscribe('/topic/winner.' + gameid, function (eventbody) {
+                    var winner = eventbody.body;
+                    $("#estado").text("Estado: Finalizado.");
+                    $("#ganador").text("Ganador: " + winner);
+                    alert("El jugador " + winner + " ha ganado.");
+                });
             });
 
         },
-
         sendLetter: function () {
 
             var id = gameid;
 
-            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: "?????"};
+            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: nombreJugador};
 
-            console.info("Gameid:"+gameid+",Sending v2:"+JSON.stringify(hangmanLetterAttempt));
-
-
+            console.info("Gameid:" + gameid + ",Sending v2:" + JSON.stringify(hangmanLetterAttempt));
             jQuery.ajax({
                 url: "/hangmangames/" + id + "/letterattempts",
                 type: "POST",
@@ -61,11 +68,21 @@ var app = (function () {
 
 
         },
-
+        loadUser: function () {
+            var userid = $("#playerid").val();
+            $.get("/users/" + userid, function (data) {
+                nombreJugador = data.name;
+                $("#userimg").attr("src", data.photoUrl);
+                $("#username").text("Nombre: " + nombreJugador);
+            }).fail(function () {
+                alert("User " + userid + " doesn't exist");
+            }
+            );
+        },
         sendWord: function () {
-            
-            var hangmanWordAttempt = {word: $("#adivina").val(), username: "??????"};
-            
+
+            var hangmanWordAttempt = {word: $("#adivina").val(), username: nombreJugador};
+
             var id = gameid;
 
             jQuery.ajax({
@@ -79,7 +96,7 @@ var app = (function () {
                 }
             });
 
-            
+
         }
 
     };

@@ -30,22 +30,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
 
 
-    
+
     <body>
         <h1 class="title">AHORCADO MULTIJUGADOR</h1>
 
         <div class="centeredinput">
             Identificador del jugador: <input id="playerid" type="text"/><br>
-            <button onclick="">Consultar datos jugador</button>
+            <button onclick="app.loadUser()">Consultar datos jugador</button>
         </div>
-        
-        
-        
+
+
+
         <div id="datosjugador" class="userdata">
             <div>
-                <img src="http://www.your3dsource.com/images/personsshadowthumb.jpg"/>
+                <img id="userimg" src="http://www.your3dsource.com/images/personsshadowthumb.jpg" alt=""/>
             </div>
-            <div>
+            <div id="username">
                 Nombre:????      
             </div>             
         </div>
@@ -54,21 +54,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Identificador del Juego: <input id="gameid" type="number"/><br>
             <button onclick="app.loadWord()">Ingresar a partida</button>
         </div>
-        
-        
+
+
         <div id="palabra">
-            
+
         </div>
-        
+
         <div id="status">
-            <div>
-                Estado: En curso
+            <div id="estado">
+                Estado: En curso.
             </div>
-            <div>
+            <div id="ganador">
                 Ganador: Ninguno.            
             </div> 
-           
-            
+
+
         </div>
 
 
@@ -76,16 +76,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Agregar letra: <input id="caracter" type="text" maxlength="1"/>
             <button id="bcaracter" onclick="app.sendLetter()">Enviar letra</button>
         </div>
-        
-        
-        
+
+
+
         <div class="box">
             Adivinar palabra!: <input id="adivina" type="text"/>
             <button id="badivina" onclick="app.sendWord()">Enviar palabra</button>
         </div>
-        
-        
-        
-        
     </body>
 </html>
